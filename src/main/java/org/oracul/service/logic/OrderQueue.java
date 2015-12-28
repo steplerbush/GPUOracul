@@ -1,6 +1,7 @@
 package org.oracul.service.logic;
 
 import org.apache.log4j.Logger;
+import org.oracul.service.exceptions.QueueOverflowException;
 import org.oracul.service.model.MeteoOrder;
 import org.oracul.service.model.Order;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +39,11 @@ public class OrderQueue {
     }
 
     public void putOrder(Order order) throws InterruptedException {
-        queue.offer(order);
-        fullTimeToExecute += order.getExpectedTimeToExecute();
+        if (!queue.offer(order)) {
+            throw new QueueOverflowException();
+        }
+        order.setStatus(Order.Status.IN_QUEUE);
+        fullTimeToExecute += order.getExecutionTime();
         LOG.debug("Order is added with ID = " + order.getId());
         LOG.debug("Queue size: " + queue.size());
     }
@@ -54,7 +58,8 @@ public class OrderQueue {
 
     public Order pollMeteoOrder() {
         Order order = queue.poll();
-        fullTimeToExecute -= order.getExpectedTimeToExecute();
+        order.setStatus(Order.Status.IN_PROCESSING);
+        fullTimeToExecute -= order.getExecutionTime();
         LOG.debug("Order #" + order.getId() + " polled. Queue size: " + queue.size());
         return order;
     }

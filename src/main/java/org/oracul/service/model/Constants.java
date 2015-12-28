@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class Constants {
 
+    public static final String METEO_ORDER = "meteo";
+
+    public static final String IMAGE_ORDER = "image";
+
     public String orderTypeParamKey;
 
     public String defaultCalcOrderTypeName;
@@ -21,5 +25,9 @@ public class Constants {
     public Long defaultTimeToExecuteCalcOrder;
 
     public Long defaultTimeToExecuteImageOrder;
+
+    public String calcOrderTypeName;
+
+    public String imageOrderTypeName;
 
 }

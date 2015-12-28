@@ -13,17 +13,10 @@ public class MeteoOrder extends Order {
 
     private Long expectedFullWaitTime;
 
-    private Map<String,String[]> params;
-
-    public MeteoOrder(Map<String,String[]> params, Double expectedWorkload, Long executionTime) {
-        super(expectedWorkload, executionTime);
+    public MeteoOrder(Map<String,String> params, Double expectedWorkload, Long executionTime) {
+        super(params, expectedWorkload, executionTime);
         id = UUID.randomUUID();
         requestTime = LocalDateTime.now();
-        this.params = params;
-    }
-
-    public Map<String,String[]> getParams() {
-        return params;
     }
 
     public LocalDateTime getRequestTime() {

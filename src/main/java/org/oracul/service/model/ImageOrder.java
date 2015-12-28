@@ -1,5 +1,6 @@
 package org.oracul.service.model;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -9,12 +10,9 @@ public class ImageOrder extends Order{
 
     private String imageURL;
 
-    private String type;
-
-    public ImageOrder(UUID id, String type, Double expectedWorkload, Long executionTime) {
-        super(expectedWorkload, executionTime);
+    public ImageOrder(UUID id, Map<String,String> params, Double expectedWorkload, Long executionTime) {
+        super(params, expectedWorkload, executionTime);
         this.id = id;
-        this.type = type;
     }
 
     public String getImageURL() {
@@ -23,10 +21,6 @@ public class ImageOrder extends Order{
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
-    }
-
-    public String getType() {
-        return type;
     }
 
 }
