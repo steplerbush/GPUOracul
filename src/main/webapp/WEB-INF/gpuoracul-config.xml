@@ -1,0 +1,38 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
+
+    <context:component-scan base-package="org.oracul.service" />
+    <mvc:annotation-driven />
+    <!-- Enable @Transactional annotation -->
+    <tx:annotation-driven />
+    <context:annotation-config />
+    <mvc:annotation-driven />
+
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources mapping="/css/**" location="/resources/css/" />
+    <mvc:resources mapping="/js/**" location="/resources/js/" />
+    <mvc:resources mapping="/data/**" location="/resources/data/" />
+
+    <!-- Resolve view name into jsp file located on /WEB-INF -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:oracul.properties</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>
