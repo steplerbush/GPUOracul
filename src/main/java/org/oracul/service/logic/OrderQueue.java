@@ -2,13 +2,11 @@ package org.oracul.service.logic;
 
 import org.apache.log4j.Logger;
 import org.oracul.service.exceptions.QueueOverflowException;
-import org.oracul.service.model.MeteoOrder;
 import org.oracul.service.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalTime;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -38,7 +36,7 @@ public class OrderQueue {
         LOG.debug("Queue is created with size: " + maxSize);
     }
 
-    public void putOrder(Order order) throws InterruptedException {
+    public void putOrder(Order order) {
         if (!queue.offer(order)) {
             throw new QueueOverflowException();
         }
@@ -56,7 +54,7 @@ public class OrderQueue {
         return queue.size();
     }
 
-    public Order pollMeteoOrder() {
+    public Order pollOrder() {
         Order order = queue.poll();
         order.setStatus(Order.Status.IN_PROCESSING);
         fullTimeToExecute -= order.getExecutionTime();
@@ -65,12 +63,13 @@ public class OrderQueue {
     }
 
     public Double getNextLoad() {
-        if (queue.peek() == null) {
-            LOG.debug("getNextLoad() - TASK is null");
+        if (!isEmpty()) {
+            LOG.debug("getNextLoad() - queue is empty");
             return 0.0;
         }
-        LOG.debug("Order id = " + queue.peek().getId());
-        return queue.peek().getExpectedWorkLoad();
+        Order o = queue.peek();
+        LOG.debug("getNextLoad() - Order id = " + o.getId() + ",  Load = " + o.getExpectedWorkLoad());
+        return o.getExpectedWorkLoad();
     }
 
     public Long getFullTimeToExecute() {

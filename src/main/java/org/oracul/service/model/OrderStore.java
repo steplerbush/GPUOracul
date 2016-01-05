@@ -11,43 +11,26 @@ import java.util.UUID;
  */
 @Service
 public class OrderStore {
-    public class OrderDual {
-        private MeteoOrder meteoOrder;
-        private ImageOrder imageOrder;
 
-        private OrderDual(MeteoOrder meteoOrder, ImageOrder imageOrder) {
-            this.imageOrder = imageOrder;
-            this.meteoOrder = meteoOrder;
-        }
-
-        public MeteoOrder getMeteoOrder() {
-            return meteoOrder;
-        }
-
-        public ImageOrder getImageOrder() {
-            return imageOrder;
-        }
-    }
-
-    private Map<UUID, OrderDual> orderStoreMap;
+    private Map<UUID, Order> orderStoreMap;
 
     public OrderStore() {
         orderStoreMap = new HashMap<>();
     }
 
-    public void put(MeteoOrder meteoOrder, ImageOrder imageOrder) {
-        orderStoreMap.put(meteoOrder.getId(), new OrderDual(meteoOrder,imageOrder));
+    public void put(Order order) {
+        orderStoreMap.put(order.getId(), order);
     }
 
-    public void poll(UUID id) {
-        orderStoreMap.remove(id);
+    public Order poll(UUID id) {
+        return orderStoreMap.remove(id);
     }
 
-    public MeteoOrder getMeteoOrder(UUID id) {
-        return orderStoreMap.get(id).getMeteoOrder();
+    public Order peek(UUID id) {
+        return orderStoreMap.get(id);
     }
 
-    public ImageOrder getImageOrder(UUID id) {
-        return orderStoreMap.get(id).getImageOrder();
+    public boolean containsOrderID(UUID id) {
+        return orderStoreMap.containsKey(id);
     }
 }

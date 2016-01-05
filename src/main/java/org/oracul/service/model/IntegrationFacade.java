@@ -32,13 +32,13 @@ public class IntegrationFacade {
 
     public Double calcOrderWorkload(String order, String type) {
         if (Constants.METEO_ORDER.equals(order)) {
-            if (type.equals(getConstants().defaultCalcOrderTypeName)) {
+            if (getConstants().defaultCalcOrderTypeName.equals(type)) {
                 return getConstants().defaultCalcOrderWorkload;
             }
             LOG.error("Can't determine calc order workload");
         }
         else if (Constants.IMAGE_ORDER.equals(order)) {
-            if (type.equals(getConstants().defaultImageOrderTypeName)) {
+            if (getConstants().defaultImageOrderTypeName.equals(type)) {
                 return getConstants().defaultImageOrderWorkload;
             }
             LOG.error("Can't determine image order workload");
@@ -62,11 +62,11 @@ public class IntegrationFacade {
         throw new CalculateWorkLoadException();
     }
 
-    public Map<String,String> getParamsMap(String meteoOrder, Map<String, String[]> parameterMap) {
+    public Map<String,String> getParamsMap(String order, Map<String, String[]> parameterMap) {
         Map<String, String> map = new HashMap<>();
         if (parameterMap != null && !parameterMap.isEmpty()) {
             for (String key : parameterMap.keySet()) {
-                if (key.toLowerCase().contains(meteoOrder))
+                if (key.toLowerCase().contains(order))
                     map.put(key, parameterMap.get(key)[0]);
             }
         }

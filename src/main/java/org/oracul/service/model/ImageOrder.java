@@ -10,8 +10,8 @@ public class ImageOrder extends Order{
 
     private String imageURL;
 
-    public ImageOrder(UUID id, Map<String,String> params, Double expectedWorkload, Long executionTime) {
-        super(params, expectedWorkload, executionTime);
+    public ImageOrder(UUID id, /*Map<String,String> params,*/ Double expectedWorkload, Long executionTime) {
+        super(/*params,*/ expectedWorkload, executionTime);
         this.id = id;
     }
 
@@ -23,4 +23,8 @@ public class ImageOrder extends Order{
         this.imageURL = imageURL;
     }
 
+    @Override
+    public void run() {
+
+    }
 }

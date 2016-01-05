@@ -1,5 +1,6 @@
 package org.oracul.service.model;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -7,6 +8,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class Constants {
+
+    @Value("${meteo.dir}")
+    public String meteoOrderDir;
+    @Value("${meteo.command}")
+    public String meteoOrderCommand;
+    @Value("${image.command}")
+    public String imageOrderCommand;
+    @Value("${image.dir}")
+    public String imageOrderDir;
 
     public static final String METEO_ORDER = "meteo";
 
