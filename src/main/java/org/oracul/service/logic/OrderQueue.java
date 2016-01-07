@@ -42,7 +42,15 @@ public class OrderQueue {
         }
         order.setStatus(Order.Status.IN_QUEUE);
         fullTimeToExecute += order.getExecutionTime();
-        LOG.debug("Order is added with ID = " + order.getId());
+        LOG.debug("Order # " + order.getId() + " is added to queue");
+        LOG.debug("Queue size: " + queue.size());
+    }
+
+    public void putOrderWithWaiting(Order order) throws InterruptedException{
+        queue.put(order);
+        order.setStatus(Order.Status.IN_QUEUE);
+        fullTimeToExecute += order.getExecutionTime();
+        LOG.debug("Order # " + order.getId() + " is added to queue");
         LOG.debug("Queue size: " + queue.size());
     }
 
@@ -58,7 +66,7 @@ public class OrderQueue {
         Order order = queue.poll();
         order.setStatus(Order.Status.IN_PROCESSING);
         fullTimeToExecute -= order.getExecutionTime();
-        LOG.debug("Order #" + order.getId() + " polled. Queue size: " + queue.size());
+        LOG.debug("Order # " + order.getId() + " polled from queue. Queue size: " + queue.size());
         return order;
     }
 
@@ -68,7 +76,7 @@ public class OrderQueue {
             return 0.0;
         }
         Order o = queue.peek();
-        LOG.debug("getNextLoad() - Order id = " + o.getId() + ",  Load = " + o.getExpectedWorkLoad());
+        LOG.debug("getNextLoad() - Order peek # " + o.getId() + ",  Load = " + o.getExpectedWorkLoad());
         return o.getExpectedWorkLoad();
     }
 

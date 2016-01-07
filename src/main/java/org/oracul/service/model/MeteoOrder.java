@@ -34,10 +34,15 @@ public class MeteoOrder extends Order {
 
     @Override
     public void run() {
+        callCalculation();
+        createImageOrder();
+    }
+
+    private void callCalculation() {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(facade.getConstants().meteoOrderCommand, id.toString());
-            processBuilder.directory(new File(facade.getConstants().meteoOrderDir));
-            LOG.debug("MeteoOrder #" + this.getId() + " prepared for execution. Stating...");
+            processBuilder.directory(new File(Constants.ROOT_PATH + facade.getConstants().meteoOrderDir));
+            LOG.debug("MeteoOrder #" + this.getId() + " prepared for execution. Starting.");
             Process start = processBuilder.start();
             start.waitFor();
             LOG.debug("MeteoOrder #" + this.getId() + " finished execution");
@@ -46,15 +51,18 @@ public class MeteoOrder extends Order {
             LOG.error(e.getMessage());
             throw new RuntimeException(e);
         }
-        if (new File(facade.getConstants().meteoOrderDir + "/" + getId()).exists()) {
+    }
+
+    private void createImageOrder() {
+        if (new File(Constants.ROOT_PATH + facade.getConstants().meteoOrderDir + "/OUT/" + getId() + "/out.dat").canRead()) {
             ImageOrder io = new ImageOrder(getId(),
                     facade.calcOrderWorkload(Constants.IMAGE_ORDER, facade.getConstants().defaultImageOrderTypeName),
                     facade.calcOrderExecutionTime(Constants.IMAGE_ORDER, facade.getConstants().defaultImageOrderTypeName));
             try {
                 facade.getOrderStore().put(io);
-                facade.getOrderQueue().putOrder(io);
+                facade.getOrderQueue().putOrderWithWaiting(io);
             } catch (QueueOverflowException e) {
-                LOG.error("Cant add image order to queue. GPU Service is overloaded");
+                LOG.error("Can't add image order to queue. GPU Service is overloaded");
                 throw e;
             } catch (Exception e) {
                 LOG.error(e);
