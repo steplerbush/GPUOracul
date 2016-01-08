@@ -1,5 +1,6 @@
 package org.oracul.service.model;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
@@ -10,7 +11,8 @@ import java.util.UUID;
  */
 public abstract class Order implements Runnable{
 
-    @Autowired
+    private static final Logger LOG = Logger.getLogger(Order.class);
+
     protected IntegrationFacade facade;
 
     protected UUID id;
@@ -27,7 +29,8 @@ public abstract class Order implements Runnable{
 
     private Status status;
 
-    public Order(/*Map<String,String> params,*/ Double expectedWorkload, Long executionTime){
+    public Order(/*Map<String,String> params,*/ Double expectedWorkload, Long executionTime, IntegrationFacade facade){
+        this.facade = facade;
         this.expectedWorkLoad = expectedWorkload;
         this.executionTime = executionTime;
         //this.params = params;

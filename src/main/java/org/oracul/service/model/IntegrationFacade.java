@@ -32,14 +32,14 @@ public class IntegrationFacade {
 
     public Double calcOrderWorkload(String order, String type) {
         if (Constants.METEO_ORDER.equals(order)) {
-            if (getConstants().defaultCalcOrderTypeName.equals(type)) {
-                return getConstants().defaultCalcOrderWorkload;
+            if (getConstants().getDefaultCalcOrderTypeName().equals(type)) {
+                return getConstants().getDefaultCalcOrderWorkload();
             }
             LOG.error("Can't determine calc order workload");
         }
         else if (Constants.IMAGE_ORDER.equals(order)) {
-            if (getConstants().defaultImageOrderTypeName.equals(type)) {
-                return getConstants().defaultImageOrderWorkload;
+            if (getConstants().getDefaultImageOrderTypeName().equals(type)) {
+                return getConstants().getDefaultImageOrderWorkload();
             }
             LOG.error("Can't determine image order workload");
         }
@@ -48,14 +48,14 @@ public class IntegrationFacade {
 
     public Long calcOrderExecutionTime(String order, String type) {
         if (Constants.METEO_ORDER.equals(order)) {
-            if (type.equals(getConstants().defaultCalcOrderTypeName)) {
-                return getConstants().defaultTimeToExecuteCalcOrder;
+            if (type.equals(getConstants().getDefaultCalcOrderTypeName())) {
+                return getConstants().getDefaultTimeToExecuteCalcOrder();
             }
             LOG.error("Can't determine calc order execution time");
         }
         else if (Constants.IMAGE_ORDER.equals(order)) {
-            if (type.equals(getConstants().defaultImageOrderTypeName)) {
-                return getConstants().defaultTimeToExecuteImageOrder;
+            if (type.equals(getConstants().getDefaultImageOrderTypeName())) {
+                return getConstants().getDefaultTimeToExecuteImageOrder();
             }
             LOG.error("Can't determine image order execution time");
         }

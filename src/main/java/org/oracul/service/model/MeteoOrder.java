@@ -18,9 +18,9 @@ public class MeteoOrder extends Order {
 
     private static final Logger LOG = Logger.getLogger(MeteoOrder.class);
 
-    public MeteoOrder(/*Map<String,String> params,*/ Double expectedWorkload, Long executionTime) {
-        super(/*params,*/ expectedWorkload, executionTime);
-        id = UUID.randomUUID();
+    public MeteoOrder(/*Map<String,String> params,*/ Double expectedWorkload, Long executionTime, IntegrationFacade facade) {
+        super(/*params,*/ expectedWorkload, executionTime, facade);
+        id = /*UUID.randomUUID()*/ UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d");
         requestTime = LocalDateTime.now();
     }
 
@@ -40,24 +40,27 @@ public class MeteoOrder extends Order {
 
     private void callCalculation() {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(facade.getConstants().meteoOrderCommand, id.toString());
-            processBuilder.directory(new File(Constants.ROOT_PATH + facade.getConstants().meteoOrderDir));
+            File meteocalc = new File(facade.getConstants().getMeteoOrderDir()+facade.getConstants().getMeteoOrderCommand());
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command(meteocalc.getAbsolutePath(), id.toString());
             LOG.debug("MeteoOrder #" + this.getId() + " prepared for execution. Starting.");
-            Process start = processBuilder.start();
-            start.waitFor();
+            Process process = processBuilder.start();
+            process.waitFor();
             LOG.debug("MeteoOrder #" + this.getId() + " finished execution");
             facade.getOrderProcessor().releaseProcessor(this);
-        } catch (IOException | InterruptedException e) {
-            LOG.error(e.getMessage());
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            LOG.error("Error while processing meteo order " + getId(), e);
         }
     }
 
     private void createImageOrder() {
-        if (new File(Constants.ROOT_PATH + facade.getConstants().meteoOrderDir + "/OUT/" + getId() + "/out.dat").canRead()) {
+        if (new File(facade.getConstants().getImageOrderDir()
+                + "OUT/" + getId() + "/out.dat").canRead()) {
             ImageOrder io = new ImageOrder(getId(),
-                    facade.calcOrderWorkload(Constants.IMAGE_ORDER, facade.getConstants().defaultImageOrderTypeName),
-                    facade.calcOrderExecutionTime(Constants.IMAGE_ORDER, facade.getConstants().defaultImageOrderTypeName));
+                    facade.calcOrderWorkload(Constants.IMAGE_ORDER, facade.getConstants().getDefaultImageOrderTypeName()),
+                    facade.calcOrderExecutionTime(Constants.IMAGE_ORDER, facade.getConstants().getDefaultImageOrderTypeName()),
+                    facade);
+            LOG.debug("ImageOrder " + io.getId() + " created and ready for queue");
             try {
                 facade.getOrderStore().put(io);
                 facade.getOrderQueue().putOrderWithWaiting(io);
@@ -68,6 +71,8 @@ public class MeteoOrder extends Order {
                 LOG.error(e);
                 throw new InternalServiceError();
             }
+        } else {
+            throw new RuntimeException("can't find calculation results for order " + getId());
         }
     }
 }

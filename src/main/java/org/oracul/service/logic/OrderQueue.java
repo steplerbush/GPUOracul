@@ -25,14 +25,12 @@ public class OrderQueue {
         return maxSize;
     }
 
-    @Value("${timeout}")
-    private Integer timeout;
-
     private LinkedBlockingQueue<Order> queue;
 
     @PostConstruct
     private void initQueue() {
         queue = new LinkedBlockingQueue<>(maxSize);
+        fullTimeToExecute = 0L;
         LOG.debug("Queue is created with size: " + maxSize);
     }
 
@@ -71,12 +69,11 @@ public class OrderQueue {
     }
 
     public Double getNextLoad() {
-        if (!isEmpty()) {
+        if (isEmpty()) {
             LOG.debug("getNextLoad() - queue is empty");
             return 0.0;
         }
         Order o = queue.peek();
-        LOG.debug("getNextLoad() - Order peek # " + o.getId() + ",  Load = " + o.getExpectedWorkLoad());
         return o.getExpectedWorkLoad();
     }
 

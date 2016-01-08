@@ -12,13 +12,16 @@ import java.io.File;
 public class Constants {
 
     @Value("${meteo.dir}")
-    public String meteoOrderDir;
-    @Value("${meteo.command}")
-    public String meteoOrderCommand;
-    @Value("${image.command}")
-    public String imageOrderCommand;
+    private String meteoOrderDir;
+
+    @Value("${meteo.comm}")
+    private String meteoOrderCommand;
+
+    @Value("${image.comm}")
+    private String imageOrderCommand;
+
     @Value("${image.dir}")
-    public String imageOrderDir;
+    private String imageOrderDir;
 
     public static final String METEO_ORDER = "meteo";
 
@@ -27,30 +30,81 @@ public class Constants {
     public static final String ROOT_PATH = new File(".").getAbsolutePath();
 
     @Value("${calc.order.type.default}")
-    public String defaultCalcOrderTypeName;
+    private String defaultCalcOrderTypeName;
 
     @Value("${image.order.type.default}")
-    public String defaultImageOrderTypeName;
+    private String defaultImageOrderTypeName;
 
     @Value("${calc.order.workload.default}")
-    public Double defaultCalcOrderWorkload;
+    private Double defaultCalcOrderWorkload;
 
     @Value("${image.order.workload.default}")
-    public Double defaultImageOrderWorkload;
+    private Double defaultImageOrderWorkload;
 
     @Value("${calc.order.execute.time.default}")
-    public Long defaultTimeToExecuteCalcOrder;
+    private Long defaultTimeToExecuteCalcOrder;
 
     @Value("${image.order.execute.time.default}")
-    public Long defaultTimeToExecuteImageOrder;
+    private Long defaultTimeToExecuteImageOrder;
 
     @Value("${calc.order.type.name}")
-    public String calcOrderTypeName;
+    private String calcOrderTypeName;
 
     @Value("${image.order.type.name}")
-    public String imageOrderTypeName;
+    private String imageOrderTypeName;
 
     @Value("${image.format}")
-    public String imageFormat;
+    private String imageFormat;
 
+    public String getMeteoOrderDir() {
+        return meteoOrderDir;
+    }
+
+    public String getMeteoOrderCommand() {
+        return meteoOrderCommand;
+    }
+
+    public String getImageOrderCommand() {
+        return imageOrderCommand;
+    }
+
+    public String getImageOrderDir() {
+        return imageOrderDir;
+    }
+
+    public String getDefaultCalcOrderTypeName() {
+        return defaultCalcOrderTypeName;
+    }
+
+    public String getDefaultImageOrderTypeName() {
+        return defaultImageOrderTypeName;
+    }
+
+    public Double getDefaultCalcOrderWorkload() {
+        return defaultCalcOrderWorkload;
+    }
+
+    public Double getDefaultImageOrderWorkload() {
+        return defaultImageOrderWorkload;
+    }
+
+    public Long getDefaultTimeToExecuteCalcOrder() {
+        return defaultTimeToExecuteCalcOrder;
+    }
+
+    public Long getDefaultTimeToExecuteImageOrder() {
+        return defaultTimeToExecuteImageOrder;
+    }
+
+    public String getCalcOrderTypeName() {
+        return calcOrderTypeName;
+    }
+
+    public String getImageOrderTypeName() {
+        return imageOrderTypeName;
+    }
+
+    public String getImageFormat() {
+        return imageFormat;
+    }
 }

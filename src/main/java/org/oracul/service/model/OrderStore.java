@@ -22,7 +22,7 @@ public class OrderStore {
         orderStoreMap.put(order.getId(), order);
     }
 
-    public Order poll(UUID id) {
+    public Order remove(UUID id) {
         return orderStoreMap.remove(id);
     }
 

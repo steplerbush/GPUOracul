@@ -16,8 +16,8 @@ public class ImageOrder extends Order{
 
     private String imageURL;
 
-    public ImageOrder(UUID id, /*Map<String,String> params,*/ Double expectedWorkload, Long executionTime) {
-        super(/*params,*/ expectedWorkload, executionTime);
+    public ImageOrder(UUID id, /*Map<String,String> params,*/ Double expectedWorkload, Long executionTime, IntegrationFacade facade) {
+        super(/*params,*/ expectedWorkload, executionTime, facade);
         this.id = id;
     }
 
@@ -32,22 +32,23 @@ public class ImageOrder extends Order{
     @Override
     public void run() {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(facade.getConstants().imageOrderCommand, id.toString());
-            processBuilder.directory(new File(facade.getConstants().imageOrderDir));
+            File meteocalc = new File(facade.getConstants().getMeteoOrderDir()+facade.getConstants().getMeteoOrderCommand());
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command(meteocalc.getAbsolutePath(), id.toString());
             LOG.debug("ImageOrder #" + this.getId() + " prepared for execution. Starting.");
             Process process = processBuilder.start();
             process.waitFor();
             LOG.debug("ImageOrder #" + this.getId() + " finished execution");
             facade.getOrderProcessor().releaseProcessor(this);
-            String url = facade.getConstants().imageOrderDir + "/" + getId()+facade.getConstants().imageFormat;
+            String url = facade.getConstants().getImageOrderDir() + "OUT_IMAGES/" + getId() + "." + facade.getConstants().getImageFormat();
             if (new File(url).canRead()) {
                 setImageURL(url);
                 setStatus(Status.READY_FOR_PICKUP);
             } else {
-                throw new RuntimeException("Image file is not created / can't to be read");
+                throw new Exception("Image file was not created or cannot to be read");
             }
-        } catch (IOException | InterruptedException e) {
-            LOG.error(e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e);
             throw new RuntimeException(e);
         }
     }
