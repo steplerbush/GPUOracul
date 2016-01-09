@@ -1,6 +1,5 @@
 package org.oracul.service.controllers;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.oracul.service.exceptions.InternalServiceError;
 import org.oracul.service.exceptions.QueueOverflowException;
@@ -8,7 +7,6 @@ import org.oracul.service.logic.OrderQueue;
 import org.oracul.service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -48,7 +46,7 @@ public class RequestController {
         //Map<String, String> imageParamsMap = facade.getParamsMap(Constants.IMAGE_ORDER, request.getParameterMap());
         //LOG.debug("received calc params: " + calcParamsMap + "; image params: " + imageParamsMap);
         String calcOrderType = /*calcParamsMap.get(facade.getConstants().calcOrderTypeName);*/facade.getConstants().getDefaultCalcOrderTypeName();
-        //String imageOrderType = /*imageParamsMap.get(facade.getConstants().imageOrderTypeName);*/facade.getConstants().defaultImageOrderTypeName;
+        String imageOrderType = /*imageParamsMap.get(facade.getConstants().imageOrderTypeName);*/facade.getConstants().getDefaultImageOrderTypeName();
         //LOG.debug("received calc Order Type: " + calcOrderType + "; image Order Type: " + imageOrderType);
 
         try {
@@ -60,10 +58,7 @@ public class RequestController {
             queue.putOrder(meteoOrder);
             Map<String, Object> returnParams = new HashMap<>();
             returnParams.put("id", meteoOrder.getId());
-            returnParams.put("queueTimeToWait", queue.getFullTimeToExecute());
-            //returnParams.put("processorTimeToWait", meteoOrder.getExecutionTime());
-            //returnParams.put("imageOrderTimeToWait", facade.calcOrderExecutionTime(Constants.IMAGE_ORDER, imageOrderType));
-
+            returnParams.put("wait", queue.getFullTimeToExecute() + facade.calcOrderExecutionTime(Constants.IMAGE_ORDER, imageOrderType));
             return returnParams;
 
         } catch (QueueOverflowException e) {
@@ -89,6 +84,7 @@ public class RequestController {
             } else if (Order.Status.IN_QUEUE.equals(io.getStatus())) {
                 //needs more intelligent logic with retrieving time from all orders in queue starting with our order
                 returnParams.put("status", "IN_QUEUE");
+                returnParams.put("wait", io.getExecutionTime());
             } else if (Order.Status.READY_FOR_QUEUE.equals(io.getStatus())) {
                 //maybe need to add retrieving time from processor
                 returnParams.put("status", "READY_FOR_QUEUE");
