@@ -32,9 +32,10 @@ public class ImageOrder extends Order{
     @Override
     public void run() {
         try {
-            File meteocalc = new File(facade.getConstants().getMeteoOrderDir()+facade.getConstants().getMeteoOrderCommand());
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command(meteocalc.getAbsolutePath(), id.toString());
+            //File meteocalc = new File(facade.getConstants().getMeteoOrderDir()+facade.getConstants().getMeteoOrderCommand());
+            String[] command = {"CMD", "/C", facade.getConstants().getImageOrderCommand(), getId().toString()};
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.directory(new File(facade.getConstants().getImageOrderDir()));
             LOG.debug("ImageOrder #" + this.getId() + " prepared for execution. Starting.");
             Process process = processBuilder.start();
             process.waitFor();
