@@ -19,7 +19,7 @@ public class MeteoOrder extends Order {
 
     public MeteoOrder(/*Map<String,String> params,*/ Double expectedWorkload, Long executionTime, IntegrationFacade facade) {
         super(/*params,*/ expectedWorkload, executionTime, facade);
-        id = UUID.randomUUID() /*UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d")*/;
+        id = UUID.randomUUID()/* UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d")*/;
         requestTime = LocalDateTime.now();
     }
 
@@ -70,7 +70,7 @@ public class MeteoOrder extends Order {
     }
 
     private void createImageOrder() {
-        if (new File(facade.getConstants().getImageOrderDir()
+        if (new File(facade.getConstants().getMeteoOrderDir()
                 + "OUT/" + getId() + "/out.dat").canRead()) {
             ImageOrder io = new ImageOrder(getId(),
                     facade.calcOrderWorkload(Constants.IMAGE_ORDER, facade.getConstants().getDefaultImageOrderTypeName()),

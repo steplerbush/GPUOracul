@@ -99,6 +99,7 @@ public class RequestController {
     @RequestMapping(value = "/getimage/{id}", method = RequestMethod.GET, produces = "image/jpg")
     public @ResponseBody byte[] getFile(@PathVariable("id") UUID id)  {
         File f = new File(((ImageOrder)facade.getOrderStore().peek(id)).getImageURL());
+        LOG.debug("Getting image from root: " + f.getAbsolutePath());
         try (InputStream is = new FileInputStream(f);
                 ByteArrayOutputStream bao = new ByteArrayOutputStream()) {
             BufferedImage img = ImageIO.read(is);
@@ -120,7 +121,7 @@ public class RequestController {
         Map<String, String> m = new HashMap<>(1);
         try {
             String imagePath = ((ImageOrder) facade.getOrderStore().peek(id)).getImageURL();
-            String dataPath = facade.getConstants().getImageOrderDir() + "OUT/" + id + "/out.dat";
+            String dataPath = facade.getConstants().getMeteoOrderDir() + "OUT/" + id + "/out.dat";
             facade.getOrderStore().remove(id);
             File image = new File(imagePath);
             File data = new File(dataPath);

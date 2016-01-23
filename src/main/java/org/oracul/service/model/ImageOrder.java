@@ -41,7 +41,7 @@ public class ImageOrder extends Order{
             process.waitFor();
             LOG.debug("ImageOrder #" + this.getId() + " finished execution");
             facade.getOrderProcessor().releaseProcessor(this);
-            String url = facade.getConstants().getImageOrderDir() + "OUT_IMAGES/" + getId() + "." + facade.getConstants().getImageFormat();
+            String url = facade.getConstants().getMeteoOrderDir() + "OUT_IMAGES/" + getId() + "." + facade.getConstants().getImageFormat();
             if (new File(url).canRead()) {
                 setImageURL(url);
                 setStatus(Status.READY_FOR_PICKUP);
